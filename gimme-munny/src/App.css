@@ -6,6 +6,9 @@
 }
 
 body, html {
+  --base: #2B2D42;
+  --accentcolor1: #41E2BA;
+  --white: #FFFFFF;
   /* background: var(--dark); */
   margin: 0;
   padding: 0;
@@ -14,4 +17,17 @@ body, html {
 
 .App {
   text-align: center;
+}
+
+.menushow {
+  left: 0px;
+  border-right: none !important;
+  transition: all 1s;
+  /* background: pink !important; */
+}
+.menuhide {
+  left: -290px;
+  border-right: solid var(--accentcolor1) 4px !important;
+  transition: all 1s;
+  /* background: pink !important; */
 }

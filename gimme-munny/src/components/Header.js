@@ -6,7 +6,6 @@ export default function Header() {
     return (
         <HeaderStyle>
             <h1>GIMME MUNNY</h1>
-
         </HeaderStyle>
 
 )
