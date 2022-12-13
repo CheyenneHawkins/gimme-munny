@@ -11,35 +11,8 @@ export default function Main() {
 
     return (
         <>
-            <SideMenu className={sidemenu}>
-                <SideMenuItem>
-                    <img src={invoices} alt='Invoices'/>
-                    <p>Invoices</p>
-                </SideMenuItem>
-                <SideMenuItem>
-                    <img src={newinvoice} alt='New Invoice'/>
-                    <p>Create Invoice</p>
-                </SideMenuItem>
-                <SideMenuItem>
-                    <img src={recipients} alt='Recipients'/>
-                    <p>Recipients</p>
-                </SideMenuItem>
-                <SideMenuItem>
-                    <img src={search} alt='Search'/>
-                    <p>Search</p>
-                </SideMenuItem>
-                <SideMenuItem>
-                    <img src={settings} alt='Settings'/>
-                    <p>Settings</p>
-                </SideMenuItem>
-            </SideMenu>
             <MainStyle>
-            <Shifter>
 
-            <button type="button" onClick={()=>{
-                sidemenu == 'menushow' ? setSidemenu('menuhide') : setSidemenu('menushow')
-            }}>Menu</button>
-            </Shifter>
             
             </MainStyle>
             </>

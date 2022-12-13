@@ -12,6 +12,7 @@ body, html {
   /* background: var(--dark); */
   margin: 0;
   padding: 0;
+  background: var(--base);
 }
 
 
@@ -30,4 +31,14 @@ body, html {
   border-right: solid var(--accentcolor1) 4px !important;
   transition: all 1s;
   /* background: pink !important; */
+}
+
+.bottomer {
+  position: absolute;
+  left: 200px;
+  bottom: 200px;
+}
+
+.borderright {
+  border-right: var(--accentcolor1) solid 5px !important;
 }
