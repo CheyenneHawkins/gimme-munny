@@ -22,7 +22,7 @@ export default function Header() {
             }}>Menu</button>
         </HeaderStyle>
         <SideMenu className={sidemenu}>
-                <SideMenuItem onClick={()=>{navigate('/invoices')}}>
+                <SideMenuItem className= "" onClick={()=>{navigate('/invoices')}}>
                     <img src={invoices} alt='Invoices'/>
                     <p>Invoices</p>
                 </SideMenuItem>

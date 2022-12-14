@@ -3,7 +3,10 @@ import { CreateInvoiceStyle, FormStyle, FormRow, TotalRow } from './Style';
 
 export default function CreateInvoice() {
 
-    const [invoiceData, setInvoiceData] = useState([{description: '', rate: '', quantity: '', subtotal: ''}]);
+    const [invoiceData, setInvoiceData] = useState([
+        {row: 1, description: '', rate: '', quantity: '', subtotal: ''},
+        {row: '', description: '', rate: '', quantity: '', subtotal: ''},
+    ]);
     const [rowSubtotal, setrowSubtotal] = useState([]);
     const [rowCounter, setRowCounter] = useState(0);
     const [extraRows, setExtraRows] = useState([]);
@@ -14,80 +17,106 @@ export default function CreateInvoice() {
     //     setrowSubtotal(rowSubtotal.push(rowsub));
     // },[invoiceData[0]])
 
-    // useEffect(()=>{
-    //     setInvoiceTotal(invoiceData[0]?.subtotal);
-    // },[invoiceData[0]])
-     
+    useEffect(()=>{
+        console.clear();
+        console.table(invoiceData);
+    }, invoiceData)
+
+    useEffect(()=>{
+        const subtotal = invoiceData[0]?.rate * invoiceData[0]?.quantity;
+        updateInvoiceData('subtotal', subtotal)
+    }, [invoiceData[0].quantity, invoiceData[0].rate])
+
+
+    function updateInvoiceData(field, value) {
+        setInvoiceData(state =>
+            state.map(index => {
+                if (index.row === 1){
+                    return {...index, [field]: value};
+                }
+            return index
+        }))
+
+    }
 
     return (
         <CreateInvoiceStyle>
             <h1>CREATE INVOICE</h1>
             <FormStyle>
                 <div id="rowholder">
+                {//-------------DEFAULT ROW---------------------}
+                }
                         <FormRow id="defaultrow">
                             <fieldset>
                                 <label>Description</label>
                                 <input type="text" placeholder="Description of item or service" onChange={(e)=>{
-                                    invoiceData[0].description = e.currentTarget.value;
-                                    setInvoiceData({ ...invoiceData[0]})
-                                    }}/>
+                                    const value = e.currentTarget.value;
+                                    updateInvoiceData('description', value)
+                                    }   //onChange closer
+                                    }/>     
                             </fieldset>
                             <fieldset className=''>
                                 <label>Rate</label>
+                {//-------------RATE---------------------}
+                }
                                 <input type="number" placeholder="$/hr" onChange={(e)=>{
-                                    console.log("Setting...")
-                                    const rate = e.currentTarget.value;
-                                    console.log("Almost...")
-                                    // if (invoiceData[0].quantity >= 1) {
-                                    //     invoiceData[0].subtotal = invoiceData[0].quantity * e.currentTarget.value;
+                                    const value = e.currentTarget.value;
+                                    updateInvoiceData('rate', value)
+                                    // if (row1.quantity >= 1) {
+                                    //     row1.subtotal = row1.quantity * e.currentTarget.value;
                                     // };
-                                    setInvoiceData({ ...invoiceData[0], rate});
-                                    console.log("Done")
                                     }}/>
                             </fieldset>
+                {//-------------QTY---------------------}
+                }                            
                             <fieldset className='borderright'>
                                 <label>Qty</label>
                                 <input type="number" placeholder='"5"' onChange={(e)=>{
-                                    const quantity = e.currentTarget.value;
-                                    // const subtotal = invoiceData[0]?.rate * quantity;
-                                    setInvoiceData({ ...invoiceData[0], quantity});
-                                    // setInvoiceData({ ...invoiceData[0], subtotal});
+                                    const value = e.currentTarget.value;
+                                    updateInvoiceData('quantity', value)
+
                                     }}/>
                             </fieldset>
+                {//-------------SUBTOTAL---------------------}
+                }                            
                             <fieldset>
-                                <label>Subtotal</label>
-                                <h3>$ {invoiceData[0]?.subtotal >= 0 && rowSubtotal}</h3>
+                                <label className='scoot'>Subtotal</label>
+                                <h3>$ {invoiceData[0]?.subtotal > 0 && (invoiceData[0].subtotal)}</h3>
                             </fieldset>
                             <fieldset></fieldset>
                         </FormRow>
+
+            {//-------------------------------------------------}
+            //-------------------EXTRA ROWS---------------------}
+                }                           
                     {extraRows.map((row, index)=>{
                     return (
                         <FormRow key={index} id={`formrow${index+2}`}>
                             <fieldset>
                                 <label></label>
                                 <input type="text" placeholder="Description of item or service" onChange={(e)=>{
-                                    invoiceData.description = e.currentTarget.value;
+                                    invoiceData[1].description = e.currentTarget.value;
                                     setInvoiceData({ ...invoiceData})
                                     }}/>
                             </fieldset>
                             <fieldset className=''>
                                 <label></label>
                                 <input type="number" placeholder="$/hr" onChange={(e)=>{
-                                    invoiceData.rate = e.currentTarget.value;
+                                    invoiceData[1].rate = e.currentTarget.value;
                                     setInvoiceData({ ...invoiceData})
                                     }}/>
                             </fieldset>
                             <fieldset className='borderright'>
                                 <label></label>
                                 <input type="number" placeholder='"5"' onChange={(e)=>{
-                                    invoiceData.quantity = e.currentTarget.value;
-                                    invoiceData.subtotal = invoiceData.rate * e.currentTarget.value;
+                                    invoiceData[1].quantity = e.currentTarget.value;
+                                    invoiceData[1].subtotal = invoiceData[1].rate * e.currentTarget.value;
                                     setInvoiceData({ ...invoiceData})
                                     }}/>
                             </fieldset>
                             <fieldset>
                                 <label></label>
-                                <h3>$ {invoiceData[0]?.subtotal >= 0 && invoiceData[0].subtotal}</h3>
+                                <h3>$ {invoiceData[1]?.subtotal >= 0 && invoiceData[0].subtotal}</h3>
                             </fieldset>
                             <fieldset>
                                 <p onClick={()=>{
@@ -110,15 +139,15 @@ export default function CreateInvoice() {
                     <div></div>
                     <div></div>
                     <h1>TOTAL:</h1>
-                    <h1>
+                    <h1 className='textalignleft'>
                     $ {invoiceTotal}
                     </h1>
                 </TotalRow>
             </FormStyle>
-        <button type="button" className="bottomer" onClick={()=>{
+        <button type="button" className="" onClick={()=>{
             console.table(invoiceData)
             }}>INVOICE DATA</button>
-            
+            <br/>
         <button type="button" className="" onClick={()=>{
             console.table(extraRows)
             }}>CONSOLE ROWS</button>

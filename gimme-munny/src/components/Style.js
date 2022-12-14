@@ -39,7 +39,7 @@ const HeaderStyle = styled.div`
 
 const SideMenu = styled.div`
     height: 500px;
-    width: 300px;
+    width: 250px;
     /* border: red solid 1px; */
     border-right: none;
     box-sizing: border-box;
@@ -194,7 +194,7 @@ const FormStyle = styled.form`
                 outline-style: none;
             }
             ::placeholder {
-                opacity: .8;
+                opacity: .5;
 
             }
         }
@@ -227,6 +227,7 @@ const FormStyle = styled.form`
             padding-top: 15px;
             align-self: center;
             justify-self: flex-start;
+            /* letter-spacing: .1rem; */
         }
     }
     & button {

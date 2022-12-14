@@ -24,13 +24,19 @@ body, html {
   left: 0px;
   border-right: none !important;
   transition: all 1s;
+  /* background-color: #2b3342; */
+  box-shadow: #41e2baa5 8px 0px 0px -2px inset;
   /* background: pink !important; */
 }
 .menuhide {
-  left: -290px;
+  left: -240px;
   border-right: solid var(--accentcolor1) 4px !important;
   transition: all 1s;
   /* background: pink !important; */
+}
+
+.topglow {
+  border-top: var(--accentcolor1) solid 4px;
 }
 
 .bottomer {
@@ -41,4 +47,13 @@ body, html {
 
 .borderright {
   border-right: var(--accentcolor1) solid 5px !important;
+}
+
+.textalignleft {
+  text-align: left !important;
+  padding-left: 20px;
+}
+
+.scoot {
+  /* padding-left: 10px !important; */
 }
