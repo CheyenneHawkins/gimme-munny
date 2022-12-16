@@ -1,19 +1,13 @@
+import { render } from '@testing-library/react';
 import { useEffect, useState } from 'react';
-import { UserAuth, logOut } from "./contexts/AuthContext"
-import { CreateInvoiceStyle, FormStyle, FormRow, TotalRow, FormTo } from './Style';
-import arrow from '../images/circle-arrow.png'
-import deleteicon from '../images/delete-icon.png'
-import { createInvoiceDbEntry } from './firebase';
-
+import { CreateInvoiceStyle, FormStyle, FormRow, TotalRow } from './Style';
 
 export default function CreateInvoice() {
-
-    const { user, logOut } = UserAuth();
 
     //object to store invoiceData fields
     const invoiceRowFields = 
     (row)=>{
-        return ({row: row, description: '', rate: '', quantity: '', subtotal: '', total: '', recipient: ''})
+        return ({row: row, description: '', rate: '', quantity: '', subtotal: '', total: ''})
     };
 
     //------STATES-------//
@@ -22,7 +16,6 @@ export default function CreateInvoice() {
     ]);
     const [rows, setRows] = useState(['row']);
     const [invoiceTotal, setInvoiceTotal] = useState();
-    const [trigger, setTrigger] = useState(false);
 
     // useEffect(()=>{
     //     renderRows();
@@ -35,22 +28,14 @@ export default function CreateInvoice() {
     }, [invoiceData])
 
 
-    function updateRowValues(field) {
-        setInvoiceData(state => 
-            state.map((index, count) => {
-                return {...index, [field]: count};
-        })
-    )
-    }
 
     function updateInvoiceData(field, value, row) {
-        setInvoiceData(data =>
-            data.map((index, count) => {
-            if (index.row === row){
-                return {...index, [field]: value};
-            } else {
-                return index
-            }
+        setInvoiceData(state =>
+            state.map(index => {
+                if (index.row === row){
+                    return {...index, [field]: value};
+                }
+            return index
         }))
     }
 
@@ -89,22 +74,20 @@ export default function CreateInvoice() {
         // setInvoiceData(...invoiceData, newData)
         console.table('UDATED INVOICE DATA:')
         console.table(invoiceData)
-        updateRowValues('row');
-        setTrigger(true)
     }
 
     function renderRows(){
+
         const fields =
             invoiceData.map((row, index)=>{
                 return (
-                    <FormRow key={index} id={`formrow${index}`}>
-                        {invoiceRow(index+1)}
-                    </FormRow>
+                    <FormRow key={index} id={`formrow${index+2}`}>
+                    {invoiceRow(index+1)}
+                </FormRow>
             )
         });
         return fields
     }
-
 
     const invoiceRow = (rowNum)=> {
         return (
@@ -119,7 +102,7 @@ export default function CreateInvoice() {
                 <fieldset className=''>
                 {//-------------RATE---------------------}
                 }
-                    <input type="number" value={`${invoiceData[rowNum-1].rate}`} placeholder="$/hr" onChange={(e)=>{
+                    <input type="number" placeholder="$/hr" onChange={(e)=>{
                         const value = e.currentTarget.value;
                         updateInvoiceData('rate', value, rowNum)
                         updateSubtotal('subtotal', rowNum)
@@ -131,7 +114,7 @@ export default function CreateInvoice() {
                 {//-------------QTY---------------------}
                 }                            
                 <fieldset className='borderright'>
-                    <input type="number"  value={`${invoiceData[rowNum-1].quantity}`} placeholder='"5"' onChange={(e)=>{
+                    <input type="number" placeholder='"5"' onChange={(e)=>{
                         const value = e.currentTarget.value;
                         updateInvoiceData('quantity', value, rowNum)
                         updateSubtotal('subtotal', rowNum)
@@ -148,8 +131,7 @@ export default function CreateInvoice() {
                             e.preventDefault();
                             deleteRow(rowNum-1);
                         }}>
-                            {/* {rowNum != 1 && 'delete'} */}
-                            {rowNum != 1 && <img src={deleteicon} height={20} />}
+                            {rowNum != 1 && 'delete'}
                         </button>
                     </p>
                 </fieldset>
@@ -157,40 +139,12 @@ export default function CreateInvoice() {
                 )
     }
 
-    function makeInvoice(e){
-        e.preventDefault();
-        const date = new Date;
-        let newDate = '';
-        function formatDate(date, format) {
-            const map = {
-                mm: date.getMonth() + 1,
-                dd: date.getDate(),
-                yy: date.getFullYear().toString().slice(-2),
-                yyyy: date.getFullYear()
-            }
-            return (`${map.mm}-${map.dd}-${map.yy}`)
-        }
-        const dateFormat = formatDate(date, newDate);
-        const userName = user.email;
-        const docName = `${dateFormat}_${invoiceData[0].recipient.replace(/ /g, "-")}-${runTotal()}`;
-        const wrappedInvoice = {data: invoiceData}
-        // updateInvoiceData('id', docName, 1)
-        createInvoiceDbEntry(userName, docName, wrappedInvoice)
-
-    }
-
+    // const [invoiceFormUI, setInvoiceFormUI] = useState(renderRows());
 
     return (
         <CreateInvoiceStyle>
             <h1>CREATE INVOICE</h1>
             <FormStyle>
-            <FormTo>
-                    <h2>To:</h2>
-                    <input type="text" onChange={(e)=>{
-                        const value = e.currentTarget.value;
-                        updateInvoiceData('recipient', value, 1)
-                        }}/>
-            </FormTo>
                 <div id="rowholder">
                         <FormRow id="formlabels">
                             <fieldset>
@@ -212,8 +166,13 @@ export default function CreateInvoice() {
             //-------------------ROW GENERATOR---------------------}
                 }        
                     {renderRows()}   
-
-
+                    {/* {invoiceData.map((row, index)=>{
+                    return (
+                        <FormRow key={index} id={`formrow${index+2}`}>
+                            {invoiceRow(index+1)}
+                        </FormRow>
+                    )
+                })} */}
                 </div>
 
                 <button type="button" onClick={()=>{
@@ -227,11 +186,6 @@ export default function CreateInvoice() {
                     <h1 className='textalignleft'>
                     $ {runTotal()}
                     </h1>
-                    <div className='goarrow'>
-                    <button type="submit" onClick={makeInvoice}>
-                        <img src={arrow} height={60}/>
-                    </button>
-                    </div>
                 </TotalRow>
             </FormStyle>
         <button type="button" className="" onClick={()=>{

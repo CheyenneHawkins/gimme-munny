@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import 'firebase/firestore';
-import { getFirestore, doc, setDoc, addDoc, collection } from "firebase/firestore";
+import { getFirestore, doc, setDoc, addDoc, collection, getDocs, query } from "firebase/firestore";
 
 
 
@@ -31,43 +31,13 @@ export const auth = getAuth(app);
 export const firestore = getFirestore(app);
 
 
-export async function experimentEntry(){
-  try {
-    console.log(firestore)
-    const docRef = addDoc(collection(firestore, "users"), {
-      first: "Ada",
-      last: "Lovelace",
-      born: 1815
-    });
-    console.log("Document written with ID: ", docRef.id);
-  } catch (e) {
-    console.error("Error adding document: ", e);
-  }
-
-}
-
-// export function updateUserAuth(name) {
-//   const updateInfo = onAuthStateChanged(auth, (user) => {
-//     if (user) {
-//       // Updates the user attributes:
-//      user.updateProfile({ // <-- Update Method here
-//        displayName: `${name}`,
-//        photoURL: ""
-//      }).then(function() {
-//        console.log(user.displayName)
-//      }, function(error) {
-//        // An error happened.
-//      });     
-
-//    }
-//   })
-//   return ()=> {
-//       updateInfo();
-//   }
-// }
-
 export function writeUserDbEntry(userID, docData) {
   const userSpot = doc(firestore, `users/${userID}`)
+  setDoc(userSpot, docData);
+}
+
+export function createInvoiceDbEntry(userID, docName, docData) {
+  const userSpot = doc(firestore, `users/${userID}/invoices/${docName}`)
   setDoc(userSpot, docData);
 }
 
@@ -79,6 +49,17 @@ export function modUserDbEntry(userID, docData) {
 export function createWeatherMessage(userIDrando, docData) {
   const userSpot = doc(firestore, `messages/${userIDrando}`)
   setDoc(userSpot, docData);
+}
+
+export async function getInvoiceList(userID, list){
+  console.log("LOOKING...")
+  const q = query(collection(firestore, `users/${userID}/invoices`));
+  const querySnapshot = await getDocs(q);
+  // querySnapshot.forEach((doc) => {
+  //   list.push(doc.data());
+  // });
+  console.log(querySnapshot)
+  // return invoiceList
 }
 
 //alias firebase="`npm config get prefix`/bin/firebase"

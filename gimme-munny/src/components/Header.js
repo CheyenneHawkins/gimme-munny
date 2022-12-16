@@ -22,10 +22,7 @@ export default function Header() {
             }}>Menu</button>
         </HeaderStyle>
         <SideMenu className={sidemenu}>
-                <SideMenuItem className= "" onClick={()=>{navigate('/invoices')}}>
-                    <img src={invoices} alt='Invoices'/>
-                    <p>Invoices</p>
-                </SideMenuItem>
+
                 <SideMenuItem onClick={()=>{navigate('/createinvoice')}}>
                     <img src={newinvoice} alt='New Invoice'/>
                     <p>Create Invoice</p>
@@ -34,6 +31,10 @@ export default function Header() {
                     <img src={recipients} alt='Recipients'/>
                     <p>Recipients</p>
                 </SideMenuItem>
+                <SideMenuItem className= "" onClick={()=>{navigate('/invoices')}}>
+                    <img src={invoices} alt='Invoices'/>
+                    <p>Invoices</p>
+                </SideMenuItem>                
                 <SideMenuItem onClick={()=>{navigate('/search')}}>
                     <img src={search} alt='Search'/>
                     <p>Search</p>

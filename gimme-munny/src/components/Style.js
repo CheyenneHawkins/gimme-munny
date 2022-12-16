@@ -8,14 +8,12 @@ const Container = styled.div`
     width: 100vw;
     background: var(--base);
     color: var(--accentcolor1);
-    /* margin: 0px 500px; */
-    /* border: gray solid 1px; */
-    /* display: grid; */
-    /* text-align: center; */
-    /* justify-content: center; */
-    font-family: custard,sans-serif;
-    font-weight: 400;
+    font-family: macho,sans-serif;
+    font-weight: 700;
     font-style: normal;
+    /* font-family: custard,sans-serif;
+    font-weight: 400;
+    font-style: normal; */
     & button {
         height: 50px;
         width: 100px;
@@ -34,6 +32,11 @@ const HeaderStyle = styled.div`
     align-items: center;
     text-align: left;
     padding-left: 100px;
+    & h1 {
+        font-family: macho, sans-serif;
+font-weight: 800;
+font-style: normal;   
+    }
 
 `
 
@@ -175,29 +178,12 @@ const FormStyle = styled.form`
         padding-bottom: 10px;
         box-sizing: border-box;
         & label {
-            margin: 10px 0px 0px 0px;
+            margin: 10px 0px -10px 0px;
             padding-right: 10px;
             /* border: purple solid 1px; */
             height: 1rem;
         }
-        & input {
-            /* border: yellow solid 1px; */
-            padding: 5px;
-            padding-left: 10px;
-            margin-top: 20px;
-            border: none;
-            border-radius: 5px;
-            height: 1rem;
-            width: 100%;
-            :focus {
-                border: none;
-                outline-style: none;
-            }
-            ::placeholder {
-                opacity: .5;
 
-            }
-        }
         & button {
             border: none;
             /* border-radius: 25px; */
@@ -224,12 +210,30 @@ const FormStyle = styled.form`
         & h3 {
             margin: 0px;
             padding: 0px;
-            padding-top: 15px;
+            padding-top: 0px;
             align-self: center;
             justify-self: flex-start;
             /* letter-spacing: .1rem; */
         }
     }
+    & input {
+            /* border: yellow solid 1px; */
+            padding: 5px;
+            padding-left: 10px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 5px;
+            height: 1rem;
+            width: 100%;
+            :focus {
+                border: none;
+                outline-style: none;
+            }
+            ::placeholder {
+                opacity: .5;
+
+            }
+        }
     & button {
         border: none;
         color: var(--base);
@@ -240,13 +244,25 @@ const FormStyle = styled.form`
         width: 30px;
         margin-left: 10px;
         margin-top: 10px;
+        cursor: pointer;
         transition: all .2s;
         :active {
             transform: scale(.9);
         }
     }
-
 `
+    const FormTo = styled.div`
+        display: grid;
+        grid-template-columns: 50px 200px;
+        align-items: center;
+        /* border: pink solid 1px; */
+        & input {
+            /* padding: 0px !important; */
+            margin: 0px !important;
+            
+        }
+    `
+
     const FormRow = styled.div`
         display: grid;
         grid-template-columns: 3fr 80px 80px 100px 50px;
@@ -260,6 +276,14 @@ const FormStyle = styled.form`
             :active {
                 transform: scale(.98);
             }
+            & button {
+                background: none;
+                color: var(--accentcolor1);
+                box-shadow: none;
+                font-size: .7rem;
+                font-weight: 300;
+
+            }
         }
         & > * {
             /* border: pink solid 1px !important; */
@@ -269,11 +293,11 @@ const FormStyle = styled.form`
     const TotalRow = styled.div`
         box-sizing: border-box;
         display: grid;
-        grid-template-columns: 2fr 1fr 1fr 1fr;
+        grid-template-columns: 3fr 80px 130px 120px 60px;
         justify-content: flex-end;
         /* border: red solid 1px; */
         text-align: right;
-        
+
         & > * {
             box-sizing: border-box;
             padding-right: 15px;
@@ -290,4 +314,4 @@ const FormStyle = styled.form`
 
 
 export { Container, SideMenu, SideMenuItem, HeaderStyle, 
-    MainStyle, Shifter, SignInStyle, FormStyle, AuthFormStyle, CreateInvoiceStyle, FormRow, TotalRow }
+    MainStyle, Shifter, SignInStyle, FormStyle, AuthFormStyle, CreateInvoiceStyle, FormRow, FormTo, TotalRow }
