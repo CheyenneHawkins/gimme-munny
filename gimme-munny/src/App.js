@@ -12,6 +12,7 @@ import Invoices from './components/Invoices';
 import CreateInvoice from './components/CreateInvoice'
 import Search from './components/Search'
 import Recipients from './components/Recipients'
+import Preview from './components/Preview'
 
 // export const MenuContext = React.createContext();
 
@@ -29,6 +30,7 @@ function App() {
             <Route path="/recipients" element={<Recipients />}/>
             <Route path="/search" element={<Search />}/>
             <Route path="/account" element={<Settings />}/>
+            <Route path="/preview" element={<Preview />}/>
           </Routes>
       </Container>
     </AuthContextProvider>

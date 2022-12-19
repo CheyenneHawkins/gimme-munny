@@ -1,15 +1,18 @@
 import { useEffect, useState } from 'react';
 import { UserAuth, logOut } from "./contexts/AuthContext"
-import { CreateInvoiceStyle, FormStyle, FormRow, TotalRow, FormTo } from './Style';
+import { CreateInvoiceStyle, FormStyle, FormRow, TotalRow, FormTo, Main } from './Style';
 import arrow from '../images/circle-arrow.png'
 import deleteicon from '../images/delete-icon.png'
 import { createInvoiceDbEntry } from './firebase';
+import { useNavigate } from "react-router-dom";
+
 
 
 export default function CreateInvoice() {
-
+    
     const { user, logOut } = UserAuth();
-
+    const navigate = useNavigate();
+    
     //object to store invoiceData fields
     const invoiceRowFields = 
     (row)=>{
@@ -157,7 +160,7 @@ export default function CreateInvoice() {
                 )
     }
 
-    function makeInvoice(e){
+    async function makeInvoice(e){
         e.preventDefault();
         const date = new Date;
         let newDate = '';
@@ -175,83 +178,85 @@ export default function CreateInvoice() {
         const docName = `${dateFormat}_${invoiceData[0].recipient.replace(/ /g, "-")}-${runTotal()}`;
         const wrappedInvoice = {data: invoiceData}
         // updateInvoiceData('id', docName, 1)
-        createInvoiceDbEntry(userName, docName, wrappedInvoice)
-
+        await createInvoiceDbEntry(userName, docName, wrappedInvoice);
+        navigate(`/preview?q=${docName}`)
     }
 
 
     return (
-        <CreateInvoiceStyle>
-            <h1>CREATE INVOICE</h1>
-            <FormStyle>
-            <FormTo>
-                    <h2>To:</h2>
-                    <input type="text" onChange={(e)=>{
-                        const value = e.currentTarget.value;
-                        updateInvoiceData('recipient', value, 1)
-                        }}/>
-            </FormTo>
-                <div id="rowholder">
-                        <FormRow id="formlabels">
-                            <fieldset>
-                                <label>Description</label>  
-                            </fieldset>
-                            <fieldset className=''>
-                                <label>Rate</label>
-                            </fieldset>                       
-                            <fieldset className='borderright'>
-                                <label>Qty</label>
-                            </fieldset>                        
-                            <fieldset>
-                                <label className='scoot'>Subtotal</label>
-                            </fieldset>
-                            <fieldset></fieldset>
-                        </FormRow>
+        <Main>
+                <h1 className='center'>CREATE INVOICE</h1>
+            <CreateInvoiceStyle>
+                <FormStyle>
+                <FormTo>
+                        <h2>To:</h2>
+                        <input type="text" onChange={(e)=>{
+                            const value = e.currentTarget.value;
+                            updateInvoiceData('recipient', value, 1)
+                            }}/>
+                </FormTo>
+                    <div id="rowholder">
+                            <FormRow id="formlabels">
+                                <fieldset>
+                                    <label>Description</label>  
+                                </fieldset>
+                                <fieldset className=''>
+                                    <label>Rate</label>
+                                </fieldset>                       
+                                <fieldset className='borderright'>
+                                    <label>Qty</label>
+                                </fieldset>                        
+                                <fieldset>
+                                    <label className='scoot'>Subtotal</label>
+                                </fieldset>
+                                <fieldset></fieldset>
+                            </FormRow>
 
-            {//-------------------------------------------------}
-            //-------------------ROW GENERATOR---------------------}
-                }        
-                    {renderRows()}   
+                {//-------------------------------------------------}
+                //-------------------ROW GENERATOR---------------------}
+                    }        
+                        {renderRows()}   
 
 
-                </div>
-
-                <button type="button" onClick={()=>{
-                    addInvoiceDataRow();
-                    setRows([...rows, 'row'])
-                    }}>+</button>
-                <TotalRow>
-                    <div></div>
-                    <div></div>
-                    <h1>TOTAL:</h1>
-                    <h1 className='textalignleft'>
-                    $ {runTotal()}
-                    </h1>
-                    <div className='goarrow'>
-                    <button type="submit" onClick={makeInvoice}>
-                        <img src={arrow} height={60}/>
-                    </button>
                     </div>
-                </TotalRow>
-            </FormStyle>
-        <button type="button" className="" onClick={()=>{
-            console.table(invoiceData)
-            }}>INVOICE DATA</button>
-        <br/>
-        <button type="button" className="" onClick={()=>{
-            console.table(rows)
-            }}>CONSOLE ROWS</button>
-        <br/>
-        <button type="button" className="" onClick={()=>{
-            addInvoiceDataRow();
-            }}>CHECK ADD INVOICE DATA</button>
-        <br/>
-        <button type="button" className="" onClick={()=>{
-            // renderRows();
-            // console.log(invoiceFormUI);
-            // console.log(renderRows());
-            }}>FORM UI</button>
-        </CreateInvoiceStyle>
+
+                    <button type="button" onClick={()=>{
+                        addInvoiceDataRow();
+                        setRows([...rows, 'row'])
+                        }}>+</button>
+                    <TotalRow>
+                        <div></div>
+                        <div></div>
+                        <h1>TOTAL:</h1>
+                        <h1 className='textalignleft'>
+                        $ {runTotal()}
+                        </h1>
+                        <div className='goarrow'>
+                        <button type="submit" onClick={(e)=> {
+                            makeInvoice(e);
+                            }}>
+                            <img src={arrow} height={60}/>
+                        </button>
+                        </div>
+                    </TotalRow>
+                </FormStyle>
+            <button type="button" className="" onClick={()=>{
+                console.table(invoiceData)
+                }}>INVOICE DATA</button>
+            <br/>
+            <button type="button" className="" onClick={()=>{
+                console.table(rows)
+                }}>CONSOLE ROWS</button>
+            <br/>
+            <button type="button" className="" onClick={()=>{
+                addInvoiceDataRow();
+                }}>CHECK ADD INVOICE DATA</button>
+            <br/>
+            <button type="button" className="" onClick={()=>{
+                navigate(`/preview?q=butts`)
+                }}>PREVIEW</button>
+            </CreateInvoiceStyle>
+        </Main>
     )
 
 

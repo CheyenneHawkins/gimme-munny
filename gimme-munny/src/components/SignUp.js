@@ -3,7 +3,7 @@ import { AuthFormStyle, SignInStyle } from "./Style";
 import { UserAuth } from "./contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import wait from "waait";
-import { auth, writeUserDbEntry, experimentEntry } from "./firebase";
+import { auth, writeUserDbEntry, experimentEntry,  } from "./firebase";
 
 export default function SignUp() {
 
@@ -13,7 +13,7 @@ export default function SignUp() {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const {createUserEmail, user} = UserAuth();
+    const {createUserEmail, user, logOut} = UserAuth();
 
     const navigate = useNavigate();
 
@@ -45,13 +45,24 @@ export default function SignUp() {
         const dataGroup = {
             name: `${name}`,
             email: `${email}`,
-            phoneNumber: '',
+            phone: '',
             invoices: [],
             userId: userID,
+            address: {street: '', city: '', state: '', zip: ''},
+            venmo: ''
             }
         writeUserDbEntry(userID, dataGroup);
     }
 
+    async function logOutButton(){
+        try {
+            await logOut();
+            navigate('/');
+        } catch (e) {
+            console.log(e.message)
+        }
+        console.log("OK")
+    }
     return (
         <>
         <SignInStyle>
@@ -72,9 +83,11 @@ export default function SignUp() {
                     }}/>
                     <button type="button" onClick={handleSubmit} disabled={loading} >Create Account</button>
                 </fieldset>   
-                <button type="button" onClick={()=> {console.log(email, password)}}>LOG IT</button>
+                {/* <button type="button" onClick={()=> {console.log(email, password)}}>LOG IT</button> */}
+                <button type="button" onClick={()=> {logOutButton()}}>LOG OUT</button>
             </AuthFormStyle>
         </SignInStyle>
+        
         </>
 
     )

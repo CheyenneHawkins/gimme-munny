@@ -10,19 +10,29 @@ import { useNavigate } from "react-router-dom";
 export default function Header() {
 
     const [sidemenu, setSidemenu] = useState('menushow');
+    const [menutab, setMenuTab] = useState('tabhidden');
+
 
     const navigate = useNavigate();
+
+    function toggleMenu() {
+        sidemenu == 'menushow' ? setSidemenu('menuhide') : setSidemenu('menushow');
+        menutab == 'tabvisible' ? setMenuTab('tabhidden') : setMenuTab('tabvisible');
+    }
+    
 
     return (
         <>
         <HeaderStyle>
-            <h1>GIMME MUNNY</h1>
-            <button type="button" onClick={()=>{
-                sidemenu == 'menushow' ? setSidemenu('menuhide') : setSidemenu('menushow')
-            }}>Menu</button>
+            <a href='/' alt="Gimme Munny">
+                <h1>GIMME MUNNY</h1>
+            </a>
         </HeaderStyle>
         <SideMenu className={sidemenu}>
-
+                <SideMenuItem onClick={()=>{toggleMenu()}}>
+                    <div className="menutabshow">◀︎ HIDE</div>
+                    <div className={`menutabshow ${menutab}`}>MENU►</div>
+                </SideMenuItem>
                 <SideMenuItem onClick={()=>{navigate('/createinvoice')}}>
                     <img src={newinvoice} alt='New Invoice'/>
                     <p>Create Invoice</p>
@@ -42,6 +52,10 @@ export default function Header() {
                 <SideMenuItem onClick={()=>{navigate('/account')}}>
                     <img src={settings} alt='Account'/>
                     <p>Settings</p>
+                </SideMenuItem>
+                <SideMenuItem onClick={()=>{navigate('/preview')}}>
+                    <p></p>
+                    <p>Preview</p>
                 </SideMenuItem>
             </SideMenu>
         </>

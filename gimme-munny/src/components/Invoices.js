@@ -16,78 +16,65 @@ export default function Invoices() {
     const objectHolder = {'good': 'butts', 'great': 'boobs', 'yep': 'big kisses'};
     const tempArray = [];
 
+    async function getDbInvoices(userID){
+        // console.log("Fetching invoice list...")
+        const q = query(collection(firestore, `users/${userID}/invoices`));
+        const querySnapshot = await getDocs(q);
+        // console.log("Got it")
+        // invoicesToArray(querySnapshot);
+        setuserInvoicesObject(querySnapshot);
+    }
+
+    //------gets invoices from db, stores it in state object
     useEffect(()=>{
-            getInvoiceListHere(user.email);
+            getDbInvoices(user.email);
             console.log("RAN EFFECT")
     }, [trigger])
 
-    async function getInvoiceListHere(userID){
-        console.log("Fetching invoice list...")
-        const q = query(collection(firestore, `users/${userID}/invoices`));
-        const querySnapshot = await getDocs(q);
-        console.log("Got it")
-        // listOfInvoices(querySnapshot);
-        setuserInvoicesObject(querySnapshot);
-    }
+
+    function invoicesToArray() {
+        // console.log("<------------------->")
+        if (userInvoicesObject != 'blank'){
+            userInvoicesObject.forEach((doc)=> {
+                tempArray.push([doc.id, doc.data()])
+                // console.log(doc.id)
+            }
+            )
+        } else {
+            // console.log("EMPTY BABY!")
+        }
+        setUserInvoicesArray(tempArray)
+        }
+
+    //-------converts from object to array
+    useEffect(()=>{
+            invoicesToArray();
+            // console.log("LIST OF INVOICES RAN")
+    }, [userInvoicesObject])
+
 
     function testState() {
         setuserInvoicesObject(objectHolder)
     }
 
-    function listOfInvoices() {
-        const theInvoiceArray =
-          userInvoicesArray.map((item, index) => {
-            return <p key={index}>{item}</p>
-        });
-        return theInvoiceArray
-        }
-    
-    function tryItArray() {
-        const theArray =
-          arrayHolder.map((item, index) => {
-            return <p key={index}>{item}</p>
-        });
-        return theArray
-    } 
-
-    function tryItObject(){
-        const theObject = Object.values(objectHolder) ;
-        return theObject
-
-        // console.log(objectHolder)
-    }
 
     const invoicelist = userInvoicesArray.map((item, index) => {
-        return <p key={index}>{item}</p>
+        const id = item[0];
+        const recipient = item[1].data[0].recipient;
+        const description = item[1].data[0].description;
+        return <a href={`/preview?q=${id}`} key={index}><p>{description}</p></a>
+        // return <p key={index}>{description}</p>
         });
 
     return (
         <>
         <CreateInvoiceStyle>
             <h1>INVOICES</h1>
-
-            {/* {tryItArray()} */}
-            {/* {listOfInvoices()} */}
-            
+           
             {invoicelist}
             
             <button type="button" onClick={()=>{
-                console.log("<------------------->")
-                // setuserInvoicesArray([]);
-                if (userInvoicesObject != 'blank'){
-                    userInvoicesObject.forEach((doc)=> {
-                        tempArray.push(doc.id)
-                        console.log(doc.id)
-                        // console.log("<Here?>")
-                        // console.log(doc.ref)
-                        // console.log(doc.data().data[0].recipient)
-                    }
-                    )
-                    // console.log(Object.keys(userInvoicesObject));
-                } else {
-                    console.log("EMPTY BABY!")
-                }
-                setUserInvoicesArray(tempArray)
+                invoicesToArray();
             }}>USER INVOICES STATE</button>
             <br/>
             <button type="button" onClick={()=>{
