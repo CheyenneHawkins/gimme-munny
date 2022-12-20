@@ -49,8 +49,11 @@ const DetailsTotal = styled.div`
     height: 55px;
     text-align: right;
     padding-left: 30px;
+    /* padding-right: 30px; */
     margin-left: 10px;
     margin-top: 30px;
+    margin-top: 30px;
+    /* margin-right: 20px; */
     width: 90%;
     /* margin-bottom: 0px; */
     /* border: purple solid 1px; */
@@ -81,6 +84,7 @@ export default function Preview() {
     const { user, logOut } = UserAuth();
     
     const [invoicePreview, setInvoicePreview] = useState('');
+    const [invoicePreviewArray, setInvoicePreviewArray] = useState([]);
     
     const [userInfo, setUserInfo] = useState();
     const [trigger, setTrigger] = useState('');
@@ -89,33 +93,24 @@ export default function Preview() {
     
     // const userID = user.email;
 
-    let snapHolder = '';
+    const tempArray = [];
+    // let invoiceTotal = '';
 
-    // async function getUserInfo() {
-    //     // await wait(1000);
-    //     const docRef = doc(firestore, "users", user.email);
-    //     const docSnap = await getDoc(docRef);
-    //     snapHolder = docSnap?.data();
-    //     setUserInfo({...userInfo, snapHolder});
-    //     console.log("----user info GOT IT----")
-    // }
-
-    
     async function getUserInfo(userID) {
-        console.log("USERINFO STATE:")
-        console.log(userInfo)
-        console.log("USERID:")
-        console.log(userID)
+        // console.log("USERINFO STATE:")
+        // console.log(userInfo)
+        // console.log("USERID:")
+        // console.log(userID)
         const docRef = doc(firestore, "users", userID);
         const docSnap = await getDoc(docRef);
         setUserInfo(docSnap.data());
-        console.log("DOCSNAP:");
-        console.log(docSnap.data());
+        // console.log("DOCSNAP:");
+        // console.log(docSnap.data());
     }
 
     useEffect(()=>{
-        console.log("EFFECT - USER IS:")
-        console.log(user)
+        // console.log("EFFECT - USER IS:")
+        // console.log(user)
         if (user.email){
             getUserInfo(user.email);
         } else {
@@ -123,15 +118,22 @@ export default function Preview() {
         }
     }, [user])
 
-    const emptyCheck = {};
-
-
     async function getInvoice(invoiceId){
         const docRef = doc(firestore, `users/${user.email}/invoices`, `${invoiceId}`);
-        const docSnap = await getDoc(docRef);
+        const docSnap = await getDoc(docRef);        
         const previewHolder = docSnap?.data().data[0];
+        const previewArray = docSnap.data().data;
         setInvoicePreview(previewHolder)
-        console.log("No such document!");
+        // previewObject.map((doc)=> {
+        //     tempArray.push(doc.data())
+        // });
+        console.log("previewArray:")
+        console.log(previewArray)
+        console.log("TempArray:")
+        console.log(tempArray)
+        setInvoicePreviewArray(previewArray);
+        // console.table(previewObject.data);
+        // console.log("No such document!");
     }
 
     //------gets invoice from databse, saves into array
@@ -139,7 +141,7 @@ export default function Preview() {
         async function getPreviewData() {
             await getInvoice(`${urlParams.get('q')}`);
             // setInvoicePreview(...invoicePreview, docSnap.data().data[0])
-            console.log("Got it")
+            // console.log("Got it")
         };
         // console.log("Getting data...")
         if (user.email){
@@ -148,7 +150,15 @@ export default function Preview() {
             console.log("Waiting for user info...")
         }
             }, [user])
-            
+     
+    function runTotal() {
+        let tempTotal = 0;
+        invoicePreviewArray.map ((data, index)=> {
+            tempTotal += invoicePreviewArray[index].subtotal;
+        });
+        // console.log(tempTotal);
+        return tempTotal
+    }
 
 
     function formatDisplayDate() {
@@ -176,12 +186,38 @@ export default function Preview() {
     const date = formatDisplayDate();
     const urlDate = formatUrlDate();
 
+/////////
+/////////
+///BUG///---------- the link variables aren't loading in time, causing the
+/////////           page to not render correctly
+/////////
     const venmoAccount = "B";
     const note = "W";
     // const venmoAccount = userInfo?.venmo.slice(1);
-    // const note = invoicePreview.description.replace(' ', "+");
-    const total = invoicePreview.subtotal;
+    // const note = invoicePreview?.description.replace(' ', "+");
+    const total = invoicePreview?.subtotal;
     const venmoPayLink = `https://venmo.com/?txn=pay&recipients=${venmoAccount}&amount=${total}&note=${urlDate}+${note}`;
+
+//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+    const itemizedList = invoicePreviewArray.map((item, index) => {
+        return (
+        <DetailsListing key={index}>
+        <p >
+            {invoicePreviewArray[index].description}
+        </p>
+        <p className='centertext'>
+            ${invoicePreviewArray[index].rate}/hr
+        </p>
+        <p className='centertext'>
+            {invoicePreviewArray[index].quantity}
+        </p>
+        <p className='centertext'>
+            ${invoicePreviewArray[index].subtotal}
+        </p>
+    </DetailsListing>
+        )
+    })
 
     return (
         <>
@@ -232,23 +268,12 @@ export default function Preview() {
                             Subtotal
                         </h4>
                     </DetailsHeadings>
-                    <DetailsListing>
-                        <p>
-                            {invoicePreview?.description}
-                        </p>
-                        <p className='centertext'>
-                            ${invoicePreview?.rate}/hr
-                        </p>
-                        <p className='centertext'>
-                            {invoicePreview?.quantity}
-                        </p>
-                        <p className='centertext'>
-                            ${invoicePreview?.subtotal}
-                        </p>
-                    </DetailsListing>
+                    {/* ------ITEMS LISTED HERE--------- */}
+                    {itemizedList}
+                    {/* ------------------------------- */}
                     <DetailsTotal>
                         <h4>
-                            AMOUNT DUE:&nbsp;&nbsp; ${invoicePreview?.subtotal}
+                            AMOUNT DUE:&nbsp;&nbsp; ${runTotal()}&nbsp;&nbsp;&nbsp;
                         </h4>
                         <h4>
                             VENMO: 
@@ -256,6 +281,7 @@ export default function Preview() {
                             {userInfo?.venmo}
                             </a>
                         </h4>
+                        
                         <button type="button" onClick={()=> {console.log(venmoPayLink)}}>VENMO LOG</button>
                     </DetailsTotal>
                 </div>
@@ -264,9 +290,7 @@ export default function Preview() {
 
             <div className='bottomer'>
                 <button type="button" onClick={()=>{
-                    // getInvoice('12-15-22_Chartruese-75')
-                    console.log("EMPTY OBJECT LOOKS LIKE:")
-                    console.log(emptyCheck)
+                    runTotal();
                 }}>LOG</button>
                 <br/>
                 <button type="button" onClick={()=>{
@@ -277,9 +301,9 @@ export default function Preview() {
                     console.log(userInfo)
                 }}>USER INFO LOG</button>
                 <button type="button" onClick={()=>{
-                    console.log("USER ID BUTTON:")
-                    console.table(user.email)
-                }}>USER.EMAIL</button>
+                    console.log("Invoice Preview Array State:")
+                    console.table(invoicePreviewArray)
+                }}>Invoice Preview Array LOG</button>
             </div>
         </CreateInvoiceStyle>
         </>

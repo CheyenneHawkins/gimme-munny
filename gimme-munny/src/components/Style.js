@@ -371,7 +371,10 @@ const InvoicePreviewStyle = styled.div`
         width: 612px;
         /* padding: 20px; */
         box-sizing: border-box;
-        background: white;
+        background: var(--white);
+        /* background: url("https://images.unsplash.com/photo-1556139943-4bdca53adf1e"); */
+        /* background-position: 10% 0%; */
+        background-size: cover;
         color: black;
         padding: 20px;
         h1 {
